@@ -1,0 +1,6 @@
+# Binaries
+task
+go-task-cli
+
+# Data
+tasks.json
