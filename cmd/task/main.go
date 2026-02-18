@@ -7,36 +7,48 @@ import (
 )
 
 func main() {
-	add := flag.String("add", "", "Add a new task")
+	add := flag.String("add", "", "Add a task")
 	list := flag.Bool("list", false, "List all tasks")
-	del := flag.Int("del", 0, "Delete a task by ID")
+	del := flag.Int("del", 0, "Delete task by ID")
+	done := flag.Int("done", 0, "Mark task as complete by ID")
 
 	flag.Parse()
 
-	// We ignore the error for now with '_' to keep it simple
 	tasks, _ := internal.LoadTasks()
 
-	if *add != "" {
+	switch {
+	case *add != "":
 		tasks.Add(*add)
 		internal.SaveTasks(tasks)
 		fmt.Println("✅ Task added!")
-	} else if *list {
+
+	case *list:
 		if len(tasks) == 0 {
 			fmt.Println("No tasks found.")
 			return
 		}
+		fmt.Printf("%-3s %-20s %-10s %-15s\n", "ID", "Task", "Status", "Created")
 		for _, t := range tasks {
-			status := " "
+			status := "Pending"
 			if t.Done {
-				status = "X"
+				status = "Done"
 			}
-			fmt.Printf("[%d] [%s] %s\n", t.ID, status, t.Description)
+			// Format the time to a readable string
+			created := t.CreatedAt.Format("Jan 02 15:04")
+			fmt.Printf("%-3d %-20s %-10s %-15s\n", t.ID, t.Description, status, created)
 		}
-	} else if *del != 0 {
+
+	case *del != 0:
 		tasks.Delete(*del)
 		internal.SaveTasks(tasks)
 		fmt.Println("🗑️ Task deleted!")
-	} else {
+
+	case *done != 0:
+		tasks.Complete(*done)
+		internal.SaveTasks(tasks)
+		fmt.Println("✔️ Task marked as complete!")
+
+	default:
 		flag.Usage()
 	}
 }
