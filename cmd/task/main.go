@@ -3,8 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
-	"github.com/viccy2/go-task-cli/internal" 
+	"github.com/viccy2/go-task-cli/internal"
 )
 
 func main() {
@@ -14,20 +13,29 @@ func main() {
 
 	flag.Parse()
 
+	// We ignore the error for now with '_' to keep it simple
 	tasks, _ := internal.LoadTasks()
 
 	if *add != "" {
 		tasks.Add(*add)
 		internal.SaveTasks(tasks)
-		fmt.Println("Added!")
+		fmt.Println("✅ Task added!")
 	} else if *list {
+		if len(tasks) == 0 {
+			fmt.Println("No tasks found.")
+			return
+		}
 		for _, t := range tasks {
-			fmt.Printf("[%d] %s (Done: %v)\n", t.ID, t.Description, t.Done)
+			status := " "
+			if t.Done {
+				status = "X"
+			}
+			fmt.Printf("[%d] [%s] %s\n", t.ID, status, t.Description)
 		}
 	} else if *del != 0 {
 		tasks.Delete(*del)
 		internal.SaveTasks(tasks)
-		fmt.Println("Deleted!")
+		fmt.Println("🗑️ Task deleted!")
 	} else {
 		flag.Usage()
 	}
