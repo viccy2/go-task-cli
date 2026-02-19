@@ -1,3 +1,5 @@
+![Build Status](https://github.com/viccy2/go-task-cli/actions/workflows/go.yml/badge.svg)
+
 # Go Task CLI 🚀
 
 A lightweight, high-performance Command Line Interface (CLI) tool built in Go for managing daily tasks. This project demonstrates clean backend architecture, JSON-based data persistence, and a fully automated CI/CD pipeline.
